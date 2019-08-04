@@ -386,3 +386,27 @@ func (c *Client) AuthCodeToOpenid(params Params) (Params, error) {
 	}
 	return c.processResponseXml(xmlStr)
 }
+
+
+func (c *Client) GetSandboxApiKey() (Params, error) {
+	var params = make(Params)
+	var url = SandboxGetApiKey
+	h := &http.Client{}
+	params["mch_id"] = c.account.mchID
+	params["nonce_str"] = nonceStr()
+	params["sign"] = c.Sign(params)
+	xml := MapToXml(params)
+	var reader = strings.NewReader(xml)
+	response, err := h.Post(url, bodyType, reader)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	xmlStr, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	params = XmlToMap(string(xmlStr))
+
+	return params, nil
+}

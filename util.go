@@ -3,30 +3,22 @@ package wxpay
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/json"
 	"encoding/pem"
 	"encoding/xml"
 	"golang.org/x/crypto/pkcs12"
-	"io"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 )
 
-// ToJSON 转化成JSON字符
-func (p Params) ToJSON() string {
-	mjson, _ := json.Marshal(p)
-	return string(mjson)
-}
-
-// Decode XML解码
-func Decode(r io.Reader) Params {
+func XmlToMap(xmlStr string) Params {
 	var (
 		d      *xml.Decoder
 		start  *xml.StartElement
 		params Params
 	)
-	d = xml.NewDecoder(r)
+	d = xml.NewDecoder(strings.NewReader(xmlStr))
 	params = make(Params)
 	for {
 		tok, err := d.Token()
@@ -45,30 +37,23 @@ func Decode(r io.Reader) Params {
 	return params
 }
 
-// Encode XML编码
-func Encode(params Params) io.Reader {
+func MapToXml(params Params) string {
 	var buf bytes.Buffer
-	buf.WriteString(``)
-	for k, _ := range params {
+	buf.WriteString(`<xml>`)
+	for k, v := range params {
 		buf.WriteString(`<`)
 		buf.WriteString(k)
 		buf.WriteString(`>`)
+		buf.WriteString(v)
+		buf.WriteString(`</`)
+		buf.WriteString(k)
+		buf.WriteString(`>`)
 	}
-	buf.WriteString(``)
-	return &buf
+	buf.WriteString(`</xml>`)
+
+	return buf.String()
 }
 
-func XmlToMap(xmlStr string) Params {	// ToJSON 转化成JSON字符
-	p := make(Params)
-	_ = json.Unmarshal([]byte(xmlStr), &p)
-	return p
-}
-
-
-func MapToXml(params Params) string { // Encode XML编码
-	p, _ := json.Marshal(params)
-	return string(p)
-}
 
 // 用时间戳生成随机字符串
 func nonceStr() string {

@@ -30,4 +30,5 @@ const (
 	SandboxReportUrl           = "https://api.mch.weixin.qq.com/sandboxnew/payitil/report"
 	SandboxShortUrl            = "https://api.mch.weixin.qq.com/sandboxnew/tools/shorturl"
 	SandboxAuthCodeToOpenidUrl = "https://api.mch.weixin.qq.com/sandboxnew/tools/authcodetoopenid"
+	SandboxGetApiKey		   = "https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey"
 )
