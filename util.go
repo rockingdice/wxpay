@@ -58,6 +58,18 @@ func Encode(params Params) io.Reader {
 	return &buf
 }
 
+func XmlToMap(xmlStr string) Params {	// ToJSON 转化成JSON字符
+	p := make(Params)
+	_ = json.Unmarshal([]byte(xmlStr), &p)
+	return p
+}
+
+
+func MapToXml(params Params) string { // Encode XML编码
+	p, _ := json.Marshal(params)
+	return string(p)
+}
+
 // 用时间戳生成随机字符串
 func nonceStr() string {
 	return strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
